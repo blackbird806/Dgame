@@ -17,36 +17,46 @@ void rotate(ref vec2f vec, float angle)
 
 class Tree
 {
-	static struct Branch
+	this()
 	{
-		vec2f start, end;
+		color.g = 255;
+		root = new Node();
 	}
 
 	static class Node 
 	{
-		Branch[] childrens;
+		Node[] childrens;
+		vec2f pos;
 	}
 
+	void drawBranch(SDL_Renderer* renderer, Node node)
+	{
+		foreach(n; node.childrens)
+		{
+			SDL_RenderDrawLine(renderer, 	cast(int) node.pos.x, cast(int) node.pos.y,
+											cast(int) n.pos.x, cast(int) n.pos.y);
+			drawBranch(renderer, n);
+		}
+	}
+
+	void draw(SDL_Renderer* renderer)
+	{
+		SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+		drawBranch(renderer, root);
+	}
+	
 	Node root;
+	Color color;
 }
 
-class TreeGenerator : IEntity
+class TreeGenerator
 {
-	void start()
-	{
-		rnd = Random(unpredictableSeed);
-	}
-
-	void update(float deltaTime)
-	{
-		
-	}
-
-	void drawBranch(SDL_Renderer* renderer, vec2f start, vec2f dir, float localAngle, float size, uint currentDepth)
+	void generateBranch(Tree.Node node, vec2f start, vec2f dir, float localAngle, float size, uint currentDepth)
 	{
 		if (currentDepth >= depth)
 			return;
 
+		auto rnd = Random(unpredictableSeed);
 		currentDepth++;
 		
 		dir.rotate(localAngle);
@@ -56,17 +66,18 @@ class TreeGenerator : IEntity
 		uint divisions = uniform(minDivisions, maxDivisions, rnd);
 		float angleInc = uniform(minAngle, maxAngle, rnd) / divisions;
 
-		SDL_RenderDrawLine(renderer, 	cast(int) start.x, cast(int) start.y,
-										cast(int) to.x, cast(int) to.y);
+		auto child = new Tree.Node();
+		child.pos = to;
+		node.childrens ~= child;
 
 		for (uint i = 0; i < divisions; i++)
 		{
-			drawBranch(renderer, to, 
+			generateBranch(child, to, 
 				(to - start).normalized, i * angleInc, 
 				uniform(minBranchSize, maxBranchSize, rnd) - currentDepth * uniform(minSizeDec, maxSizeDec, rnd), 
 				currentDepth);
 
-			drawBranch(renderer, to, 
+			generateBranch(child, to, 
 				(to - start).normalized, -i * angleInc, 
 				uniform(minBranchSize, maxBranchSize, rnd) - currentDepth * uniform(minSizeDec, maxSizeDec, rnd), 
 				currentDepth);
@@ -74,16 +85,11 @@ class TreeGenerator : IEntity
 
 	}
 
-	void draw(SDL_Renderer* renderer)
-	{
-		SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
-		drawBranch(renderer, rootPos, vec2f(0.0f, -1.0f), 0, truncSize, 0);
-	}
-
 	auto generate()
 	{
 		auto tree = new Tree();
-		tree.root
+		generateBranch(tree.root, rootPos, vec2f(0, -1), 0, truncSize, 0);
+		return tree;
 	}
 
 	float minBranchSize, maxBranchSize;
@@ -93,7 +99,5 @@ class TreeGenerator : IEntity
 	uint minDivisions, maxDivisions;
 	float truncSize;
 	uint depth;
-	Color color;
 	vec2f rootPos;
-	Random rnd;
 }

@@ -127,30 +127,29 @@ class MyGame : GameApp
 		// foreach (agent; agents)
 		// 	entities ~= agent;
 
-		auto tree = new TreeGenerator();
-		with (tree)
+		treeGen = new TreeGenerator();
+		with (treeGen)
 		{
-			minBranchSize = 50.0f;
-			maxBranchSize = 100.0f;
+			minBranchSize = 20.0f;
+			maxBranchSize = 80.0f;
 
-			minAngle = 10.0f;
-			maxAngle = 20.0f;
+			minAngle = 3.0f;
+			maxAngle = 12.0f;
 
 			minSizeDec = 0.01f;
 			maxSizeDec = 0.02f;
 
-			minDivisions = 2;
+			minDivisions = 1;
 			maxDivisions = 3;
 
 			truncSize = 10.0f;
-			color.g = 255;
 			depth = 4;
 
 			rootPos.x = SCREEN_WIDTH / 2;
 			rootPos.y = SCREEN_HEIGHT - 10;
 		}
 
-		entities ~= tree;
+		tree = treeGen.generate();
 
 		loadYamlFile();
 	}
@@ -188,7 +187,8 @@ class MyGame : GameApp
 		}
 		if (inputs.key[SDL_SCANCODE_SPACE])
 		{
-			loadYamlFile();
+			tree = treeGen.generate();
+			// loadYamlFile();
 		}
 	}
 
@@ -198,6 +198,14 @@ class MyGame : GameApp
 		updatePlayerInputs();
 	}
 
+	override void draw()
+	{
+		super.draw();
+		tree.draw(renderer);
+	}
+
 	Ship player;
 	AIShip[] agents;
+	Tree tree;
+	TreeGenerator treeGen;
 }
