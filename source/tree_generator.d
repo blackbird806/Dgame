@@ -3,14 +3,14 @@ module tree_generator;
 import game_app;
 import std.experimental.logger;
 import derelict.sdl2.sdl;
-import std.math, std.random;
-import color;
+import std.math, std.random, std.algorithm;
+import color, serialization;
 import gfm.math;
 
 void rotate(ref vec2f vec, float angle)
 {
-	auto _sin = sin(angle);
-	auto _cos = cos(angle);
+	const auto _sin = sin(angle);
+	const auto _cos = cos(angle);
 	vec.x = vec.x * _cos - vec.y * _sin;
 	vec.y = vec.x * _sin + vec.y * _cos;
 }
@@ -51,7 +51,7 @@ class Tree
 
 class TreeGenerator
 {
-	void generateBranch(Tree.Node node, vec2f start, vec2f dir, float localAngle, float size, uint currentDepth)
+	void generateBranch(Tree.Node node, vec2f dir, float localAngle, float size, uint currentDepth)
 	{
 		if (currentDepth >= depth)
 			return;
@@ -60,8 +60,8 @@ class TreeGenerator
 		currentDepth++;
 		
 		dir.rotate(localAngle);
-		dir.normalize();
 
+		auto start = node.pos;
 		vec2f to = start + dir * size;
 		uint divisions = uniform(minDivisions, maxDivisions, rnd);
 		float angleInc = uniform(minAngle, maxAngle, rnd) / divisions;
@@ -72,13 +72,7 @@ class TreeGenerator
 
 		for (uint i = 0; i < divisions; i++)
 		{
-			generateBranch(child, to, 
-				(to - start).normalized, i * angleInc, 
-				uniform(minBranchSize, maxBranchSize, rnd) - currentDepth * uniform(minSizeDec, maxSizeDec, rnd), 
-				currentDepth);
-
-			generateBranch(child, to, 
-				(to - start).normalized, -i * angleInc, 
+			generateBranch(child, (to - start).normalized, i * angleInc, 
 				uniform(minBranchSize, maxBranchSize, rnd) - currentDepth * uniform(minSizeDec, maxSizeDec, rnd), 
 				currentDepth);
 		}
@@ -88,16 +82,20 @@ class TreeGenerator
 	auto generate()
 	{
 		auto tree = new Tree();
-		generateBranch(tree.root, rootPos, vec2f(0, -1), 0, truncSize, 0);
+		tree.root.pos = rootPos;
+		generateBranch(tree.root, vec2f(-0.3, -0.3).normalized, 0, truncSize, 0);
 		return tree;
 	}
 
-	float minBranchSize, maxBranchSize;
-	float minAngle, maxAngle;
-	float startThikness, endThikness;
-	float minSizeDec, maxSizeDec;
-	uint minDivisions, maxDivisions;
-	float truncSize;
-	uint depth;
+	@Serialize() 
+	{
+		float minBranchSize, maxBranchSize;
+		float minAngle, maxAngle;
+		float startThikness, endThikness;
+		float minSizeDec, maxSizeDec;
+		uint minDivisions, maxDivisions;
+		float truncSize;
+		uint depth;
+	}
 	vec2f rootPos;
 }

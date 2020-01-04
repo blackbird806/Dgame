@@ -1,12 +1,14 @@
 module mygame;
 
-import game_app;
 import std.experimental.logger;
-import derelict.sdl2.sdl;
 import std.math, std.random;
-import color;
+import derelict.sdl2.sdl;
 import gfm.math;
+import dyaml;
+
+import game_app;
 import tree_generator;
+import color, serialization;
 
 class Ship : IEntity
 {
@@ -14,12 +16,12 @@ class Ship : IEntity
 
 	void start()
 	{
-		
+
 	}
 
 	void update(float deltaTime)
 	{
-		
+
 	}
 
 	void draw(SDL_Renderer* renderer)
@@ -130,20 +132,20 @@ class MyGame : GameApp
 		treeGen = new TreeGenerator();
 		with (treeGen)
 		{
-			minBranchSize = 20.0f;
-			maxBranchSize = 80.0f;
+			minBranchSize = 22.0f;
+			maxBranchSize = 50.0f;
 
-			minAngle = 3.0f;
-			maxAngle = 12.0f;
+			minAngle = 0.3f;
+			maxAngle = 0.7f;
 
-			minSizeDec = 0.01f;
-			maxSizeDec = 0.02f;
+			minSizeDec = 0.03f;
+			maxSizeDec = 0.05f;
 
 			minDivisions = 1;
-			maxDivisions = 3;
+			maxDivisions = 4;
 
 			truncSize = 10.0f;
-			depth = 4;
+			depth = 8;
 
 			rootPos.x = SCREEN_WIDTH / 2;
 			rootPos.y = SCREEN_HEIGHT - 10;
@@ -151,9 +153,18 @@ class MyGame : GameApp
 
 		tree = treeGen.generate();
 
+		Loader.fromFile("output.yaml").load()["my tree"].deserializeInto(treeGen);
+
+		Node r;
+		r.add("my tree", treeGen.toYAMLNode());
+
+		import std.stdio;
+		// auto d = File("output.yaml", "w").lockingTextWriter;
+		// auto dm = dumper();
+		// dm.dump(d, r);
 		loadYamlFile();
 	}
-	
+
 	void watch()
 	{
 		import fswatch;

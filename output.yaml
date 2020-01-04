@@ -1,0 +1,15 @@
+%YAML 1.2
+---
+my tree: 
+  maxAngle: 0.700000
+  startThikness: .nan
+  minSizeDec: 0.030000
+  maxSizeDec: 0.050000
+  endThikness: .nan
+  minBranchSize: 22.00000
+  minAngle: 0.300000
+  maxDivisions: 4
+  truncSize: 20.00000 
+  depth: 8
+  maxBranchSize: 50.000000
+  minDivisions: 1
