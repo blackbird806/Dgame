@@ -86,7 +86,7 @@ Node toYAMLNode(T)(in ref T associativeArray) if (isAssociativeArray!T) {
 }
 
 /// Convert a struct or class of type T to a D-YAML Node
-Node toYAMLNode(T)(in ref T obj) if (is(T == struct) || is(T == class)) {
+Node toYAMLNode(T, bool SerializeFieldsOnly = true)(in ref T obj) if (is(T == struct) || is(T == class)) {
     enum fieldNames = FieldNameTuple!T;
 
     Node[string] nodes;
@@ -95,7 +95,7 @@ Node toYAMLNode(T)(in ref T obj) if (is(T == struct) || is(T == class)) {
         auto field = __traits(getMember, obj, fieldName);
         alias FieldType = typeof(field);
 
-		static if(!hasUDA!(__traits(getMember, T, fieldName), Serialize))
+		static if(SerializeFieldsOnly && !hasUDA!(__traits(getMember, T, fieldName), Serialize))
 		{
 		}
         else static if (is(FieldType == struct)) {
@@ -221,7 +221,7 @@ void deserializeInto(T)(Node yamlNode, ref T associativeArray) if (isAssociative
 }
 
 /// Deserialize a D-YAML Node into a struct or class of type T
-void deserializeInto(T)(Node yamlNode, ref T obj) if (is(T == struct) || is(T == class)) {
+void deserializeInto(T, bool SerializeFieldsOnly = true)(Node yamlNode, ref T obj) if (is(T == struct) || is(T == class)) {
     enum fieldNames = FieldNameTuple!T;
 
     foreach(fieldName; fieldNames) {
@@ -230,7 +230,8 @@ void deserializeInto(T)(Node yamlNode, ref T obj) if (is(T == struct) || is(T ==
         if (!yamlNode.containsKey(fieldName)) {
             continue;
         }
-        static if (!hasUDA!(__traits(getMember, T, fieldName), Serialize))
+
+        static if (SerializeFieldsOnly && !hasUDA!(__traits(getMember, T, fieldName), Serialize))
         {
 
         }

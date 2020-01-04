@@ -8,7 +8,7 @@ import dyaml;
 
 import game_app;
 import tree_generator;
-import color, serialization;
+import serialization, utility;
 
 class Ship : IEntity
 {
@@ -151,18 +151,18 @@ class MyGame : GameApp
 			rootPos.y = SCREEN_HEIGHT - 10;
 		}
 
-		tree = treeGen.generate();
-
-		Loader.fromFile("output.yaml").load()["my tree"].deserializeInto(treeGen);
-
-		Node r;
-		r.add("my tree", treeGen.toYAMLNode());
 
 		import std.stdio;
+		Loader.fromFile("output.yaml").load()["my tree"].deserializeInto(treeGen);
+		log(treeGen.rootPos);
+		tree = treeGen.generate();
+		
+		// Node r;
+		// r.add("my tree", treeGen.toYAMLNode());
 		// auto d = File("output.yaml", "w").lockingTextWriter;
 		// auto dm = dumper();
 		// dm.dump(d, r);
-		loadYamlFile();
+		// loadYamlFile();
 	}
 
 	void watch()
@@ -198,6 +198,7 @@ class MyGame : GameApp
 		}
 		if (inputs.key[SDL_SCANCODE_SPACE])
 		{
+			Loader.fromFile("output.yaml").load()["my tree"].deserializeInto(treeGen);
 			tree = treeGen.generate();
 			// loadYamlFile();
 		}

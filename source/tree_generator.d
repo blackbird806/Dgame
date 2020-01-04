@@ -4,16 +4,8 @@ import game_app;
 import std.experimental.logger;
 import derelict.sdl2.sdl;
 import std.math, std.random, std.algorithm;
-import color, serialization;
 import gfm.math;
-
-void rotate(ref vec2f vec, float angle)
-{
-	const auto _sin = sin(angle);
-	const auto _cos = cos(angle);
-	vec.x = vec.x * _cos - vec.y * _sin;
-	vec.y = vec.x * _sin + vec.y * _cos;
-}
+import serialization, utility;
 
 class Tree
 {
