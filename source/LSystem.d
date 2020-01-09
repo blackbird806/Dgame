@@ -22,8 +22,10 @@ class LSystem
 {
 	void generate(string initial, System[] systems)
 	{
-		points ~= start;
+		lines = [];
+		
 		auto currentPos = start;
+		auto lastPos = start;
 		auto currentAngle = 0.0f;
 		auto dir = vec2f(0, -1);
 
@@ -43,7 +45,8 @@ class LSystem
 			{
 				case 'F':
 					currentPos = currentPos + dir.rotate(currentAngle).normalized * stepLength;
-					points ~= currentPos;
+					Line l = {p1: lastPos, p2: currentPos};
+					lines ~= l;
 				break;
 				case '[':
 					State s = {currentPos, currentAngle};
@@ -65,26 +68,22 @@ class LSystem
 				break;
 				default:
 			}
+			lastPos = currentPos;
 		}
 	}
 
 	void draw(SDL_Renderer* renderer)
 	{
-		for(auto i = 1; i < points.length; i++)
+		renderer.SDL_SetRenderDrawColor(color.r, color.g, color.b, color.a);
+		foreach(line; lines)
 		{
-			renderer.SDL_SetRenderDrawColor(color.r, color.g, color.b, color.a);
-			auto prev = points[i-1];
-			auto pt = points[i];
-			// SDL_RenderDrawLine(renderer, roundTo!int(prev.x), roundTo!int(prev.y), roundTo!int(pt.x), roundTo!int(pt.y));
-			
-			renderer.SDL_SetRenderDrawColor(0, 255, 0, 255);
-			SDL_Rect r = {x: roundTo!int(pt.x), y: roundTo!int(pt.y), w: 3, h: 3};
-			SDL_RenderFillRect(renderer, &r);
+			SDL_RenderDrawLine(renderer,  roundTo!int(line.p1.x), roundTo!int(line.p1.y), 
+								roundTo!int(line.p2.x), roundTo!int(line.p2.y));
 		}
 	}
 
 	State[] stack;
-	vec2d[] points;
+	Line[] lines;
 	vec2d start;
 	uint nbIts;
 	real stepLength = 5.0;

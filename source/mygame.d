@@ -196,7 +196,7 @@ class MyGame : GameApp
 		{
 			player.pos.y += player.speed * deltaTime;
 		}
-		if (inputs.key[SDL_SCANCODE_SPACE])
+		if (inputs.keyPressed[SDL_SCANCODE_SPACE])
 		{
 			Loader.fromFile("output.yaml").load()["my tree"].deserializeInto(treeGen);
 			tree = treeGen.generate();

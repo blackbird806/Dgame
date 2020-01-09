@@ -11,27 +11,37 @@ import LSystem;
 
 class ABOPApp : GameApp
 {
+	System sys = {initial: "F", expanded: "F[+F]F[-F]F"};
+	System sys2 = {"X", "F[+X]F[-X]+X"};
+
 	override void start()
 	{
 		lsystem = new LSystem();
-		lsystem.start = vec2f(SCREEN_WIDTH/1.5, SCREEN_HEIGHT);
-		lsystem.nbIts = 5;
-		lsystem.stepLength = 8.0f;
-		lsystem.stepAngle = PI_4;
+		lsystem.start = vec2f(SCREEN_WIDTH/1.5, SCREEN_HEIGHT / 2);
+		lsystem.nbIts = 2;
+		lsystem.stepLength = 5f;
+		// lsystem.stepAngle = 0.349066;
 		lsystem.color.b = 255;
-		System sys = {initial: "F", expanded: "F[+F]F[-F]F"};
 		// sys.expanded = "F-F+F+FF-F-F+F";
 		// lsystem.generate("F-F-F-F",  [sys]);
 		// sys.expanded = "F+F-F-F+F";
 		// lsystem.generate("F-F-F-F", [sys]);
-		lsystem.generate("F", [sys]);
-
-		std.experimental.logger.log("nb points : ", lsystem.points.length, 
-		"\tsize : ", (lsystem.points.length * vec2f.sizeof) / 1024, " kb");
+		// sys.expanded = "FF-[-F+F+F]+[+F-F-F]";
+		// sys.expanded = "FF";
+		// lsystem.generate("X", [sys, sys2]);
+		sys.expanded = "F+f-FF+F+FF+Ff+FF-f+FF-F-FF-Ff-FFF";
+		sys2.initial = "f";
+		sys2.expanded = "ffffff";
+		lsystem.generate("F+F+F+F", [sys, sys2]);
 	}
 
 	override void update()
 	{
+		if (inputs.keyPressed[SDL_SCANCODE_SPACE])
+		{
+			lsystem.nbIts++;
+			lsystem.generate("F+F+F+F", [sys, sys2]);
+		}
 	}
 
 	override void draw()

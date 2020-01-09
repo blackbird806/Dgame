@@ -10,6 +10,7 @@ import std.concurrency;
 struct Input
 {
     bool[SDL_NUM_SCANCODES] key;
+    bool[SDL_NUM_SCANCODES] keyPressed;
     int x, y, xrel, yrel;
     int xwheel, ywheel;
 }
@@ -62,6 +63,10 @@ class GameApp
 
 	private void handleInputs()
 	{
+		foreach (key, ref value; inputs.keyPressed)
+		{
+			value = false;
+		}
 		SDL_Event event;
    		while(SDL_PollEvent(&event))
 		{
@@ -72,6 +77,8 @@ class GameApp
 				break;
 
 				case SDL_KEYDOWN:
+					if (!inputs.key[event.key.keysym.scancode] )
+						inputs.keyPressed[event.key.keysym.scancode] = true;
 					inputs.key[event.key.keysym.scancode] = true;
 				break;
 
