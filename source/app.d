@@ -4,6 +4,7 @@ import mygame, ABOP_app;
 void main()
 {
 	auto app = new ABOPApp();
+	// auto app = new MyGame();
 	scope(exit) app.destroy();
 
 	app.run();

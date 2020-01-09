@@ -150,8 +150,8 @@ class GameApp
 	Input inputs;
 	Tid fileWatcherThread;
 
-	immutable SCREEN_WIDTH = 640;
-	immutable SCREEN_HEIGHT = 480;
+	immutable SCREEN_WIDTH = 1280;
+	immutable SCREEN_HEIGHT = 720;
 
 	IEntity[] entities;
 

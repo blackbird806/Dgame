@@ -1,19 +1,16 @@
 module utility;
 
 import gfm.math;
+import std.traits, std.math;
 
 alias Color = Vector!(ubyte, 4);
 
-void rotate(ref vec2f vec, float angle)
+struct Line
 {
-	import std.math; 
-	const auto _sin = sin(angle);
-	const auto _cos = cos(angle);
-	vec.x = vec.x * _cos - vec.y * _sin;
-	vec.y = vec.x * _sin + vec.y * _cos;
+	vec2f p1, p2;
 }
 
-vec2f rotated(vec2f vec, float angle)
+vec2f rotate(vec2f vec, float angle)
 {
 	import std.math; 
 	const auto _sin = sin(angle);
@@ -22,4 +19,10 @@ vec2f rotated(vec2f vec, float angle)
 	r.x = vec.x * _cos - vec.y * _sin;
 	r.y = vec.x * _sin + vec.y * _cos;
 	return r;
+}
+
+auto roundTo(TO, T)(T val)
+	if (isNumeric!T && isNumeric!TO)
+{
+	return cast(TO)(round(val));
 }

@@ -51,7 +51,7 @@ class TreeGenerator
 		auto rnd = Random(unpredictableSeed);
 		currentDepth++;
 		
-		dir.rotate(localAngle);
+		dir = dir.rotate(localAngle);
 
 		auto start = node.pos;
 		vec2f to = start + dir * size;
