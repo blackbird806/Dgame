@@ -3,6 +3,7 @@
         "dscanner.style.undocumented_declaration",
         "dscanner.suspicious.unmodified",
         "dscanner.suspicious.unused_variable",
-        "dscanner.suspicious.local_imports"
+        "dscanner.suspicious.local_imports",
+        "dscanner.style.phobos_naming_convention"
     ]
 }
