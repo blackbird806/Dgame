@@ -27,7 +27,13 @@ auto roundTo(TO, T)(T val)
 	return cast(TO)(round(val));
 }
 
+template SerializableAggregate(T)
+{
+	enum SerializableAggregate = (is(T == class) || is(T == struct)) && __traits(hasMember, T, "name");
+}
+
 auto deserialize(T)(string filePath, T t)
+	if(SerializableAggregate!T)
 {
 	import serialization, dyaml;
 	Loader.fromFile(filePath).load()[t.name].deserializeInto(t);
@@ -35,6 +41,7 @@ auto deserialize(T)(string filePath, T t)
 }
 
 void serialize(T)(string filePath, T t)
+	if(SerializableAggregate!T)
 {
 	import serialization, dyaml;
 

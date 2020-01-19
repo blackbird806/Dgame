@@ -11,5 +11,13 @@
 	},
 	"description": "A minimal D application.",
 	"license": "MIT",
-	"name": "game"
+	"name": "game",
+
+	"buildTypes": 
+	{
+		"debug": 
+		{
+			"versions": [ "FSWForcePoll" ]
+		}
+	}	
 }

@@ -1,17 +1,8 @@
-%YAML 1.1
----
 lsystem:
-  nbIts: 1
   color:
-    x: 255
-    z: 0
-    y: 0
+    x: 0
+    y: 127
+    z: 127
     w: 0
-    v: [255, 0, 0, 0]
-  stepLength: 15.000000
-  scale: 1.000000
-  start:
-    x: 853.333313
-    y: 360.000000
-    v: [853.333313, 360.000000]
-  stepAngle: 0.310000
+  stepLength: 31.000000
+  stepAngle: 0.31

@@ -233,7 +233,8 @@ void deserializeInto(T)(Node yamlNode, ref T associativeArray) if (isAssociative
 }
 
 /// Deserialize a D-YAML Node into a struct or class of type T
-void deserializeInto(T, bool SerializeFieldsOnly = true)(Node yamlNode, ref T obj) if (is(T == struct) || is(T == class)) {
+void deserializeInto(T, bool SerializeFieldsOnly = true)(Node yamlNode, ref T obj) 
+if (is(T == struct) || is(T == class)) {
     enum fieldNames = FieldNameTuple!T;
 
     foreach(fieldName; fieldNames) {

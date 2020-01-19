@@ -5,6 +5,7 @@ import std.math, std.random, std.stdio;
 import derelict.sdl2.sdl;
 import gfm.math.vector;
 
+import fswatch;
 import game_app;
 import serialization, utility;
 import LSystem;
@@ -16,6 +17,8 @@ class ABOPApp : GameApp
 
 	override void start()
 	{
+		watcher = FileWatch(".", false);
+
 		speed = baseSpeed;
 		lsystem = new LSystem();
 		lsystem.start = vec2f(SCREEN_WIDTH/1.5, SCREEN_HEIGHT / 2);
@@ -38,18 +41,33 @@ class ABOPApp : GameApp
 		lsystem.generate("F", [sys, sys2]);
 		// sys.expanded = "F+f-FF+F+FF+Ff+FF-f+FF-F-FF-Ff-FFF";
 		// sys2.initial = "f";
+
 		// sys2.expanded = "ffffff";
 		// lsystem.generate("F+F+F+F", [sys, sys2]);
-		lsystem = deserialize("output.yaml", lsystem);
+		deserialize("output.yaml", lsystem);
+	}
+
+	void watch()
+	{
+		foreach (event; watcher.getEvents())
+		{
+			writefln("Update");
+			if (event.path == "output.yaml" && event.type == FileChangeEventType.modify)
+			{
+				deserialize("output.yaml", lsystem);
+			}
+		}
 	}
 
 	override void update()
 	{
+		super.update();
+		watch();
 		if (inputs.keyPressed[SDL_SCANCODE_SPACE])
 		{
 			lsystem.nbIts++;
 		}
-
+		
 		lsystem.generate("F", [sys, sys2]); 
 
 		if (inputs.key[SDL_SCANCODE_LEFT])
@@ -88,4 +106,5 @@ class ABOPApp : GameApp
 	LSystem lsystem;
 	float baseSpeed = 200.5f, speed;
 	float scaleSpeed = 0.05f;
+	FileWatch watcher;
 }

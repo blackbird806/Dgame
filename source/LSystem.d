@@ -8,9 +8,9 @@ import utility, serialization;
 
 struct System
 {
+	@Serialize:
 	char initial;
 	string expanded;
-	void delegate(LSystem lsystem) action;
 }
 
 struct State
@@ -43,15 +43,7 @@ class LSystem
 		for (auto index = 0; index < path.length; index++)
 		{
 			auto current = path[index];
-			/*
-			foreach (system; systems)
-			{
-				if (system.initial == current)
-				{
-					system.action(this);
-				}
-			}
-			*/
+
 			switch(current)
 			{
 				case 'F':
@@ -96,12 +88,13 @@ class LSystem
 	State[] stack;
 	Line[] lines;
 	string name = "lsystem";
-	
+
+	uint nbIts;
+	vec2f start;
+	float scale = 1.0f;
+
 	@Serialize:
-		vec2f start;
-		uint nbIts;
 		real stepLength = 5.0;
 		real stepAngle = PI_2;
 		Color color;
-		float scale = 1.0f;
 }
