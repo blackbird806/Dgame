@@ -4,17 +4,18 @@ import std.experimental.logger;
 import derelict.sdl2.sdl;
 import std.math, std.algorithm, std.array;
 import gfm.math;
-import utility;
+import utility, serialization;
 
 struct System
 {
-	string initial;
+	char initial;
 	string expanded;
+	void delegate(LSystem lsystem) action;
 }
 
 struct State
 {
-	vec2d pos;
+	vec2f pos;
 	float angle;
 }
 
@@ -23,6 +24,7 @@ class LSystem
 	void generate(string initial, System[] systems)
 	{
 		lines = [];
+		stack = [];
 		
 		auto currentPos = start;
 		auto lastPos = start;
@@ -41,16 +43,23 @@ class LSystem
 		for (auto index = 0; index < path.length; index++)
 		{
 			auto current = path[index];
+			/*
+			foreach (system; systems)
+			{
+				if (system.initial == current)
+				{
+					system.action(this);
+				}
+			}
+			*/
 			switch(current)
 			{
 				case 'F':
 					currentPos = currentPos + dir.rotate(currentAngle).normalized * stepLength;
-					Line l = {p1: lastPos, p2: currentPos};
-					lines ~= l;
+					lines ~= Line(lastPos * scale, currentPos * scale);
 				break;
 				case '[':
-					State s = {currentPos, currentAngle};
-					stack ~= s;
+					stack ~= State(currentPos, currentAngle);
 				break;
 				case ']':
 					currentPos = stack.back.pos;
@@ -74,19 +83,25 @@ class LSystem
 
 	void draw(SDL_Renderer* renderer)
 	{
-		renderer.SDL_SetRenderDrawColor(color.r, color.g, color.b, color.a);
+		SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
 		foreach(line; lines)
 		{
-			SDL_RenderDrawLine(renderer,  roundTo!int(line.p1.x), roundTo!int(line.p1.y), 
-								roundTo!int(line.p2.x), roundTo!int(line.p2.y));
+			SDL_RenderDrawLine(renderer, roundTo!int(line.p1.x), 
+										 roundTo!int(line.p1.y), 
+										 roundTo!int(line.p2.x), 
+										 roundTo!int(line.p2.y));
 		}
 	}
 
 	State[] stack;
 	Line[] lines;
-	vec2d start;
-	uint nbIts;
-	real stepLength = 5.0;
-	real stepAngle = PI_2;
-	Color color;
+	string name = "lsystem";
+	
+	@Serialize:
+		vec2f start;
+		uint nbIts;
+		real stepLength = 5.0;
+		real stepAngle = PI_2;
+		Color color;
+		float scale = 1.0f;
 }

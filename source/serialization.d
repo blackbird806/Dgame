@@ -6,6 +6,8 @@ import std.stdio;
 import std.traits;
 import std.conv;
 
+import gfm.math.vector;
+
 struct Serialize
 {
 }
@@ -98,6 +100,10 @@ Node toYAMLNode(T, bool SerializeFieldsOnly = true)(in ref T obj) if (is(T == st
 		static if(SerializeFieldsOnly && !hasUDA!(__traits(getMember, T, fieldName), Serialize))
 		{
 		}
+        else static if (isInstanceOf!(gfm.math.Vector, FieldType))
+        {
+            nodes[fieldName] = field.toYAMLNode!(FieldType, false);
+        }
         else static if (is(FieldType == struct)) {
             // This field is a struct - recurse into it
             nodes[fieldName] = field.toYAMLNode();
@@ -133,6 +139,7 @@ Node toYAMLNode(T, bool SerializeFieldsOnly = true)(in ref T obj) if (is(T == st
 void deserializeInto(T)(Node yamlNode, ref T array) if (isArray!T) {
     alias ElementType = ForeachType!T;
 
+    uint i = 0;
     // Iterate each item in the array of nodes and add them to values, converting them to the actual type
     foreach(item; yamlNode.as!(Node[])) {
         static if (is(ElementType == struct)) {
@@ -165,9 +172,14 @@ void deserializeInto(T)(Node yamlNode, ref T array) if (isArray!T) {
             item.deserializeInto(subArray);
             array ~= subArray;
         }
-        else {
+        else static if (isDynamicArray!ElementType) {
             array ~= item.as!ElementType;
         }
+        else // static array
+        {
+            array[i] = item.as!ElementType;
+        }
+        i++;
     }
 }
 
@@ -234,6 +246,10 @@ void deserializeInto(T, bool SerializeFieldsOnly = true)(Node yamlNode, ref T ob
         static if (SerializeFieldsOnly && !hasUDA!(__traits(getMember, T, fieldName), Serialize))
         {
 
+        }
+        else static if (isInstanceOf!(gfm.math.Vector, FieldType))
+        {
+            yamlNode[fieldName].deserializeInto!(FieldType, false)(__traits(getMember, obj, fieldName));
         }
         else static if (is(FieldType == struct)) {
             // This field is a struct - recurse into it

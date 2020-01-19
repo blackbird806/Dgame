@@ -1,15 +1,17 @@
-%YAML 1.2
+%YAML 1.1
 ---
-my tree:
-  maxAngle: 0.900000
-  startThikness: .nan
-  minSizeDec: 0.040000
-  maxSizeDec: 0.080000
-  endThikness: .nan
-  minBranchSize: 22.000000
-  minAngle: 0.400000
-  maxDivisions: 3
-  truncSize: 50.000000
-  depth: 15
-  maxBranchSize: 30.000000
-  minDivisions: 1
+lsystem:
+  nbIts: 1
+  color:
+    x: 255
+    z: 0
+    y: 0
+    w: 0
+    v: [255, 0, 0, 0]
+  stepLength: 15.000000
+  scale: 1.000000
+  start:
+    x: 853.333313
+    y: 360.000000
+    v: [853.333313, 360.000000]
+  stepAngle: 0.310000

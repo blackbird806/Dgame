@@ -5,7 +5,6 @@ import core.thread : dur, Thread;
 import std.datetime.stopwatch : StopWatch, AutoStart;
 import std.algorithm;
 import derelict.sdl2.sdl;
-import std.concurrency;
 
 struct Input
 {
@@ -28,7 +27,6 @@ class GameApp
 	{
 		initSDL();
 	}
-
 
 	private void initSDL()
 	{
@@ -61,6 +59,17 @@ class GameApp
 		log("init sdl successfully");
 	}
 
+	protected void onWindowResized()
+	{
+		SDL_GetWindowSize(window, &SCREEN_WIDTH, &SCREEN_HEIGHT);
+		log("window resized w: ", SCREEN_WIDTH, " h: ", SCREEN_HEIGHT);
+	}
+
+	protected void rollV(int y)
+	{
+
+	}
+
 	private void handleInputs()
 	{
 		foreach (key, ref value; inputs.keyPressed)
@@ -74,6 +83,20 @@ class GameApp
 			{
 				case SDL_QUIT:
 					appRunning = false;
+				break;
+
+				case SDL_WINDOWEVENT:
+					switch(event.window.event)
+					{
+						case SDL_WINDOWEVENT_SIZE_CHANGED:
+							onWindowResized();
+						break;
+						default:
+					}
+				break;
+
+				case SDL_MOUSEWHEEL:
+					rollV(event.wheel.y);
 				break;
 
 				case SDL_KEYDOWN:
@@ -106,8 +129,9 @@ class GameApp
 		{
 			 if (deltaTime < minFrameTime)
 			{
+				// @TODO 
 			//	Thread.sleep(dur!"msecs"(cast(uint) ((minFrameTime - deltaTime) * 1000)));
-				 Thread.sleep(dur!"msecs"(14));
+				Thread.sleep(dur!"msecs"(14));
 			}
 
 			auto old = time;
@@ -155,10 +179,9 @@ class GameApp
 	SDL_Renderer* renderer;
 	bool appRunning = true;
 	Input inputs;
-	Tid fileWatcherThread;
 
-	immutable SCREEN_WIDTH = 1280;
-	immutable SCREEN_HEIGHT = 720;
+	int SCREEN_WIDTH = 1280;
+	int SCREEN_HEIGHT = 720;
 
 	IEntity[] entities;
 

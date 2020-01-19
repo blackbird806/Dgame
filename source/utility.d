@@ -1,7 +1,7 @@
 module utility;
 
-import gfm.math;
-import std.traits, std.math;
+import gfm.math.vector;
+import std.traits, std.math, std.stdio;
 
 alias Color = Vector!(ubyte, 4);
 
@@ -25,4 +25,22 @@ auto roundTo(TO, T)(T val)
 	if (isNumeric!T && isNumeric!TO)
 {
 	return cast(TO)(round(val));
+}
+
+auto deserialize(T)(string filePath, T t)
+{
+	import serialization, dyaml;
+	Loader.fromFile(filePath).load()[t.name].deserializeInto(t);
+	return t;
+}
+
+void serialize(T)(string filePath, T t)
+{
+	import serialization, dyaml;
+
+	Node r;
+	r.add(t.name, t.toYAMLNode());
+	auto d = File(filePath, "w").lockingTextWriter;
+	auto dm = dumper();
+	dm.dump(d, r);
 }
