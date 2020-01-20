@@ -12,13 +12,21 @@ import LSystem;
 
 class ABOPApp : GameApp
 {
-	System sys = {initial: 'F', expanded: "F[+F]F[-F]F"};
-	System sys2 = {'X', "F[+X]F[-X]+X"};
+	System sys = {name: "sys" , initial: 'F', expanded: "F[+F]F[-F]F"};
+	System sys2 = {name: "sys2", 'X', "F[+X]F[-X]+X"};
+	
+	enum configFile = "output.yaml";
+
+	void loadYaml()
+	{
+		deserialize(configFile, lsystem);
+		sys = deserialize(configFile, sys);
+		sys2 = deserialize(configFile, sys2);
+	}
 
 	override void start()
 	{
 		watcher = FileWatch(".", false);
-
 		speed = baseSpeed;
 		lsystem = new LSystem();
 		lsystem.start = vec2f(SCREEN_WIDTH/1.5, SCREEN_HEIGHT / 2);
@@ -38,13 +46,13 @@ class ABOPApp : GameApp
 		// System sys3 = {"Z", "XF-ZXFZ"};
 		// sys.expanded = "F+A+";
 		// sys2.expanded = "-F-A";
-		lsystem.generate("F", [sys, sys2]);
 		// sys.expanded = "F+f-FF+F+FF+Ff+FF-f+FF-F-FF-Ff-FFF";
 		// sys2.initial = "f";
 
 		// sys2.expanded = "ffffff";
 		// lsystem.generate("F+F+F+F", [sys, sys2]);
-		deserialize("output.yaml", lsystem);
+		loadYaml();
+		lsystem.generate("F", [sys, sys2]);
 	}
 
 	void watch()
@@ -52,9 +60,9 @@ class ABOPApp : GameApp
 		foreach (event; watcher.getEvents())
 		{
 			writefln("Update");
-			if (event.path == "output.yaml" && event.type == FileChangeEventType.modify)
+			if (event.path == configFile && event.type == FileChangeEventType.modify)
 			{
-				deserialize("output.yaml", lsystem);
+				loadYaml();
 			}
 		}
 	}
@@ -63,12 +71,18 @@ class ABOPApp : GameApp
 	{
 		super.update();
 		watch();
-		if (inputs.keyPressed[SDL_SCANCODE_SPACE])
+
+		if (inputs.keyPressed[SDL_SCANCODE_KP_PLUS])
 		{
 			lsystem.nbIts++;
 		}
-		
+		if (inputs.keyPressed[SDL_SCANCODE_KP_MINUS])
+		{
+			if (lsystem.nbIts > 0)
+				lsystem.nbIts--;
+		}
 		lsystem.generate("F", [sys, sys2]); 
+
 
 		if (inputs.key[SDL_SCANCODE_LEFT])
 		{
@@ -94,7 +108,6 @@ class ABOPApp : GameApp
 		lsystem.scale += scaleSpeed * y;
 		lsystem.scale = max(0.001, lsystem.scale);
 		speed = baseSpeed / lsystem.scale;
-		log("scale ", lsystem.scale);
 	}
 
 	override void draw()

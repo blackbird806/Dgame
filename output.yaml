@@ -4,5 +4,14 @@ lsystem:
     y: 127
     z: 127
     w: 0
-  stepLength: 31.000000
+  stepLength: 12.000000
   stepAngle: 0.31
+  thikness: 1
+
+sys:
+  initial: 'F'
+  expanded: "FF-[-F+F+F]+[+F-F-F]"
+
+sys2:
+  initial: 'X'
+  expanded: "F[+F]F[-F]+X"

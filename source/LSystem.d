@@ -4,13 +4,15 @@ import std.experimental.logger;
 import derelict.sdl2.sdl;
 import std.math, std.algorithm, std.array;
 import gfm.math;
-import utility, serialization;
+import utility, serialization, draw_utilities;
 
 struct System
 {
+	string name;
+	
 	@Serialize:
-	char initial;
-	string expanded;
+		char initial;
+		string expanded;
 }
 
 struct State
@@ -32,7 +34,7 @@ class LSystem
 		auto dir = vec2f(0, -1);
 
 		string path = initial;
-		foreach (it; 0 .. nbIts)
+		foreach (_; 0 .. nbIts)
 		{
 			foreach(system; systems)
 			{
@@ -94,6 +96,7 @@ class LSystem
 	float scale = 1.0f;
 
 	@Serialize:
+		float thikness = 1.0f;
 		real stepLength = 5.0;
 		real stepAngle = PI_2;
 		Color color;

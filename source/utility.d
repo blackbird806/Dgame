@@ -27,27 +27,3 @@ auto roundTo(TO, T)(T val)
 	return cast(TO)(round(val));
 }
 
-template SerializableAggregate(T)
-{
-	enum SerializableAggregate = (is(T == class) || is(T == struct)) && __traits(hasMember, T, "name");
-}
-
-auto deserialize(T)(string filePath, T t)
-	if(SerializableAggregate!T)
-{
-	import serialization, dyaml;
-	Loader.fromFile(filePath).load()[t.name].deserializeInto(t);
-	return t;
-}
-
-void serialize(T)(string filePath, T t)
-	if(SerializableAggregate!T)
-{
-	import serialization, dyaml;
-
-	Node r;
-	r.add(t.name, t.toYAMLNode());
-	auto d = File(filePath, "w").lockingTextWriter;
-	auto dm = dumper();
-	dm.dump(d, r);
-}
