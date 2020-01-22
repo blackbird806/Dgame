@@ -207,10 +207,10 @@ void deserializeInto(T)(Node yamlNode, ref T array) if (isArray!T) {
             item.deserializeInto(subArray);
             array ~= subArray;
         }
-        else static if (isDynamicArray!ElementType) {
+        else static if (isDynamicArray!T) {
             array ~= item.as!ElementType;
         }
-        else // static array
+        else static if (isStaticArray!T)
         {
             array[i] = item.as!ElementType;
         }

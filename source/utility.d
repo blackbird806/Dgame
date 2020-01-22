@@ -8,6 +8,7 @@ alias Color = Vector!(ubyte, 4);
 struct Line
 {
 	vec2f p1, p2;
+	float thickness;
 }
 
 vec2f rotate(vec2f vec, float angle)

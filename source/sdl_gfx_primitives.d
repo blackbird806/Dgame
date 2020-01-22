@@ -1,4 +1,4 @@
-module draw_utilities;
+module sdl_gfx_primitives;
 
 import derelict.sdl2.sdl;
 import core.stdc.stdlib;
@@ -33,7 +33,7 @@ Andreas Schiffler -- aschiffler at ferzkopp dot net
 
 ------
 
-D traduction by blackbird
+D translated by blackbird
 
 */
 

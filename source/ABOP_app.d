@@ -12,8 +12,8 @@ import LSystem;
 
 class ABOPApp : GameApp
 {
-	System sys = {name: "sys" , initial: 'F', expanded: "F[+F]F[-F]F"};
-	System sys2 = {name: "sys2", 'X', "F[+X]F[-X]+X"};
+	System sys = {name: "sys"};
+	System sys2 = {name: "sys2"};
 	
 	enum configFile = "output.yaml";
 
@@ -34,24 +34,9 @@ class ABOPApp : GameApp
 		lsystem.stepLength = 30.0f;
 		lsystem.stepAngle = 0.31;
 		lsystem.color.b = 255;
-		// sys.expanded = "F-F+F+FF-F-F+F";
-		// lsystem.generate("F-F-F-F",  [sys]);
-		// sys.expanded = "F+F-F-F+F";
-		// lsystem.generate("F-F-F-F", [sys]);
-		sys.expanded = "FF-[-F+F+F]+[+F-F-F]";
-		// sys.expanded = "FF";
-		// sys.initial = "F";
-		// sys.expanded = "F[+F][-F]FX";
-		// sys2.expanded = "-[-F[-FF]]+F[+X]";
-		// System sys3 = {"Z", "XF-ZXFZ"};
-		// sys.expanded = "F+A+";
-		// sys2.expanded = "-F-A";
-		// sys.expanded = "F+f-FF+F+FF+Ff+FF-f+FF-F-FF-Ff-FFF";
-		// sys2.initial = "f";
 
-		// sys2.expanded = "ffffff";
-		// lsystem.generate("F+F+F+F", [sys, sys2]);
 		loadYaml();
+		lsystem.randomize();
 		lsystem.generate("F", [sys, sys2]);
 	}
 
@@ -75,6 +60,7 @@ class ABOPApp : GameApp
 		if (inputs.keyPressed[SDL_SCANCODE_KP_PLUS])
 		{
 			lsystem.nbIts++;
+			lsystem.randomize();
 		}
 		if (inputs.keyPressed[SDL_SCANCODE_KP_MINUS])
 		{
@@ -99,6 +85,12 @@ class ABOPApp : GameApp
 		if (inputs.key[SDL_SCANCODE_DOWN])
 		{
 			lsystem.start.y += speed * deltaTime;
+		}
+
+		if (inputs.keyPressed[SDL_SCANCODE_SPACE])
+		{
+			lsystem.randomize();
+			std.experimental.logger.log(lsystem.rnd);
 		}
 	}
 
