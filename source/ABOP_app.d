@@ -19,7 +19,7 @@ class ABOPApp : GameApp
 
 	void loadYaml()
 	{
-		deserialize(configFile, lsystem);
+		lsystem = deserialize(configFile, lsystem);
 		sys = deserialize(configFile, sys);
 		sys2 = deserialize(configFile, sys2);
 	}
@@ -32,12 +32,12 @@ class ABOPApp : GameApp
 		lsystem.start = vec2f(SCREEN_WIDTH/1.5, SCREEN_HEIGHT / 2);
 		lsystem.nbIts = 1;
 		lsystem.stepLength = 30.0f;
-		lsystem.stepAngle = 0.31;
+		lsystem.stepAngle = 0.3926991;
 		lsystem.color.b = 255;
 
 		loadYaml();
 		lsystem.randomize();
-		lsystem.generate("F", [sys, sys2]);
+		lsystem.generate("X", [sys, sys2]);
 	}
 
 	void watch()
@@ -67,7 +67,7 @@ class ABOPApp : GameApp
 			if (lsystem.nbIts > 0)
 				lsystem.nbIts--;
 		}
-		lsystem.generate("F", [sys, sys2]); 
+		lsystem.generate("X", [sys, sys2]); 
 
 
 		if (inputs.key[SDL_SCANCODE_LEFT])
@@ -89,8 +89,9 @@ class ABOPApp : GameApp
 
 		if (inputs.keyPressed[SDL_SCANCODE_SPACE])
 		{
+			alias print = std.experimental.logger.log;
 			lsystem.randomize();
-			std.experimental.logger.log(lsystem.rnd);
+			print(lsystem.rnd);
 		}
 	}
 

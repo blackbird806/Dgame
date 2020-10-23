@@ -33,7 +33,7 @@ Andreas Schiffler -- aschiffler at ferzkopp dot net
 
 ------
 
-D translated by blackbird
+D translation by blackbird806
 
 */
 

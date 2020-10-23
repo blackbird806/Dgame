@@ -17,6 +17,7 @@ struct System
 {
 	string name;
 	
+	// https://stackoverflow.com/questions/4463561/weighted-random-selection-from-array
 	string getExpanded(float rnd)
 	{
 		float[] CDF = [ productions[0].probability ];

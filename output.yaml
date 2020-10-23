@@ -1,25 +1,27 @@
 lsystem:
   color:
-    x: 0
+    x: 255
     y: 127
     z: 200
     w: 255
   stepLength: 12.000000
-  stepAngle: 0.31
+  stepAngle: 0.3926991
   startThickness: 1
   endThickness: 1
 
 sys:
-  axiom: 'F'
-  productions: 
-    - expanded: "F[+F]F[-F]F"
-      probability: 0.33
-    - expanded: "F[+F]F"
-      probability: 0.33
-    - expanded: "F[-F]F"
-      probability: 0.33
-sys2:
   axiom: 'X'
+  productions: 
+    - expanded: "F-[[X]+X]+F[+FX]-X"
+      probability: 1.0
+    - expanded: "F[+F]F"
+      probability: 0.0
+    - expanded: "F[-F]F"
+      probability: 0.0
+    - expanded: "FFX"
+      probability: 0.0
+sys2:
+  axiom: 'F'
   productions: 
     - expanded: "FF"
       probability: 1.0
